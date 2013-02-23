@@ -14,7 +14,7 @@ Responsibility of this script:
 - Periodically update the above two list.
 
 This script will create allView and mruView needed by this script under
-~/.viewSearchSelect on my development machine.
+~/.viewSearchSelect.
 
 Responsibility of pySearchSelect is to provide a GUI for search and selection
 of views.
