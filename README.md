@@ -25,7 +25,7 @@ q          : exits without writing the selection to the given file.
 Up         : Move up
 Down       : Move down
 Left Mouse : selects an item.
-```
+
 usage: pySearchSelect.py [-h] -f FILE -l [line [line ...]]
 
 Interactive search and selection of ASCII lines using python
@@ -36,6 +36,7 @@ optional arguments:
   -l [line [line ...]], --lines [line [line ...]]
                         Lines to be displayed interactively to the user
   -l [line [line ...]], --lines [line [line ...]]
+```
 Examples:
 
 Simple Usage:
