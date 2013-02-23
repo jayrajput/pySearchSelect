@@ -28,7 +28,7 @@ Left Mouse : selects an item.
 ```
 Usage:
 ````
-usage: pySearchSelect.py [-h] -f FILE -l [line [line ...]]
+usage: pySearchSelect [-h] -f FILE -l [line [line ...]]
 
 Interactive search and selection of ASCII lines using python
 
