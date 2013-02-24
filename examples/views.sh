@@ -5,7 +5,7 @@ selViewFile=$myDir/selViewFile
 mruViewFile=$myDir/mruViewFile
 allViewFile=$myDir/allViewFile
 
-if [ ! -d $myDir ]; then mkdir $myDir; fi
+if [ ! -e $myDir ]; then mkdir $myDir; fi
 touch $selViewFile;
 touch $mruViewFile;
 touch $allViewFile;
