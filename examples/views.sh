@@ -12,8 +12,8 @@ touch $allViewFile;
 
 CT_SETVIEW="cleartool setview "
 CT_LSVIEW="cleartool lsview --short "
-CT_SETVIEW="echo"
-CT_LSVIEW="cat /tmp/views"
+# FORTESTING CT_SETVIEW="echo"
+# FORTESTING CT_LSVIEW="cat /tmp/views"
 
 function myview()
 {
