@@ -11,7 +11,7 @@ touch $mruViewFile;
 touch $allViewFile;
 
 CT_SETVIEW="cleartool setview "
-CT_LSVIEW="cleartool lsview --short "
+CT_LSVIEW="cleartool lsview -short "
 # FORTESTING CT_SETVIEW="echo"
 # FORTESTING CT_LSVIEW="cat /tmp/views"
 
@@ -19,8 +19,8 @@ function myview()
 {
     # clear any previous selection.
     cat /dev/null > $selViewFile;
-    # pySearchSelect shall be in your $PATH
-    pySearchSelect -f $selViewFile -l $(cat $mruViewFile) $(cat $allViewFile)
+    # $pySearchSelect shall be defined and be in your $PATH
+    $pySearchSelect -f $selViewFile -l $(cat $mruViewFile) $(cat $allViewFile)
     # if file has some contents
     if [[ -s $selViewFile ]]; then
         pushViewToMruList $(cat $selViewFile);
