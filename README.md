@@ -1,10 +1,9 @@
 Python Interactive Search and Select Tool (pySearchSelect)
 ==============
 
-pySearchSelect is python module and script for interactive search and select
-line selection tool for ASCII, operating via a full-screen Curses-based
-terminal session. It is primarily written to be used by other scripts (like
-bash, python, perl) to make useful scripts.
+pySearchSelect is python module and script for interactive search and selection 
+of ASCII lines, operatinneg via a full-screen Curses-based terminal session. 
+It is primarily written to be used by other scripts (like bash, python, perl) to make useful scripts.
 
 Software requirement:
 
