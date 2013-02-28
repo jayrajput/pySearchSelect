@@ -1,7 +1,7 @@
 directory bookmarking
 =====================
 
-bash script to interactively search and select bookmarked directories. I have
+python script to interactively search and select bookmarked directories. I have
 used multiple directory bookmarking tricks in my life and this script is
 inspired from those. Here are the tricks:
 
@@ -15,15 +15,27 @@ command called by the shell script tries to do too much like file system
 navigation and it does not support search and quick select and is written in
 C++ which you cannot edit as easily as python.
 
-This shell script provide a function called marks which shows the directories
-bookmarked by cdargs in the pySearchSelect.
+This python script when execute shows the formatted content of the ~/.cdargs.
+That is all it does and it does it using pySearchSelect module.
 
 To install cdargs on ubuntu execute "sudo apt-get install cdargs". Once cdargs
 is installed, get the bash file from
 /usr/share/doc/cdargs/examples/cdargs-bash.sh and then source it from your
 bashrc.
 
-You may want to update the cdargs-bash.sh to use the marks function to have the
-interactive display in place of using the default cdargs. Or you can keep the
-cdargs-bash.sh unchanged and use the marks function when you looking for
-interactive search.
+Since marks does not do much on its own you might want to update cdargs-bash.sh
+to use marks.
+
+```bash
+48if cdargs --noresolve "${1/\/*/}"; then
+49   dir=`cat "$HOME/.cdargsresult"`
+50   /bin/rm -f "$HOME/.cdargsresult";
+51fi
+
+to these updated lines:
+
+marks
+if [[ -s $HOME/.cdargsresult ]]; then
+    dir=$(cat $HOME/.cdargsresult | sed -e 's!\[.*\] !!g')
+fi
+```
