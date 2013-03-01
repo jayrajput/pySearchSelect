@@ -17,7 +17,7 @@ class ItemWidget (urwid.WidgetWrap):
         self.item = [
             urwid.AttrWrap(self.description, 'body', 'focus'),
         ]
-        self.content = '%s' % (description[:45])
+        self.content = '%s' % (description[0:])
         w = urwid.Columns(self.item)
         self.__super.__init__(w)
 
