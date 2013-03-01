@@ -11,13 +11,49 @@ import argparse
 # use unix like file name matching.
 import fnmatch 
 
+
+def isQuickSelect(input):
+    return input.isalnum()
+
+def quickSelect2Int(input):
+    if input.isdigit():
+        return ord(input) - 48
+    elif input.isalpha():
+        # ord('a') = 97 
+        return ord(input) - 87
+
+def int2QuickSelect(index):
+    if index in range(0, 10):
+        return str(index);
+    elif index in range(10, 36):
+        # chr(97) = 'a'
+        return chr(index + 87)
+    else:
+        return ""
+
 class ItemWidget (urwid.WidgetWrap):
-    def __init__ (self, description):
-        self.description = urwid.Text(description)
-        self.item = [
-            urwid.AttrWrap(self.description, 'body', 'focus'),
-        ]
+    def __init__ (self, index, description):
+        self.index = index
         self.content = '%s' % (description[0:])
+        self.item = [
+            (
+                'fixed', 
+                4, 
+                urwid.Padding(
+                    urwid.AttrWrap(
+                        urwid.Text('%s' % int2QuickSelect(index)), 
+                        'body', 
+                        'focus'
+                    ), 
+                    left=1
+                )
+            ),
+            urwid.AttrWrap(
+                urwid.Text('%s' % description), 
+                'body', 
+                'focus'
+            ),
+        ]
         w = urwid.Columns(self.item)
         self.__super.__init__(w)
 
@@ -32,7 +68,7 @@ class CustomEdit(urwid.Edit):
     signals = ['done']
 
     def keypress(self, size, key):
-        if key in ('enter','tab', 'down', 'up'):
+        if key in ('enter','tab', 'down', 'up', 'ctrl n'):
             urwid.emit_signal(self, 'done', self.get_edit_text())
             return
         elif key == 'esc':
@@ -51,10 +87,11 @@ class MyApp(object):
         self.items  = data["lines"]
         self.head   = CustomEdit('/')
         header      = urwid.AttrMap(self.head, 'head')
-        self.walker = urwid.SimpleListWalker(
-            # python list comprehension. See
-            # http://docs.python.org/2/tutorial/datastructures.html#list-comprehensions
-            [ItemWidget(str(line)) for line in data["lines"]]
+        self.walker = urwid.SimpleListWalker([
+                # python list comprehension. See
+                # http://docs.python.org/2/tutorial/datastructures.html#list-comprehensions
+                ItemWidget(index, item) for (index, item) in enumerate(data["lines"])
+            ]
         )
         self.listbox = urwid.ListBox(self.walker)
         self.view = urwid.Frame(
@@ -86,13 +123,27 @@ class MyApp(object):
             raise urwid.ExitMainLoop()
         elif input in ('/', 'tab'):
             self.view.set_focus('header')
+        elif isQuickSelect(input):
+            self.walker.set_focus(quickSelect2Int(input))
+        elif input is "ctrl n":
+            self.walker.set_focus(self.walker.next_position()+ 1)
+
+
 
     def edit_change(self, input, content):
         # strip any asterisk before adding ours.
         content = "*" + content.strip("*") + "*"
         # list comprehension again.
         # See http://docs.python.org/2/tutorial/datastructures.html#list-comprehensions
-        self.walker[:] = [ItemWidget(item) for item in self.items if fnmatch.fnmatch(item, content)]
+        visibleItems = [
+            item
+            for item in self.items
+            if fnmatch.fnmatch(item, content)
+        ]
+        self.walker[:] = [
+            ItemWidget(index, item)
+            for (index, item) in enumerate(visibleItems)
+        ]
 
     def edit_done(self, content):
         self.view.set_focus('body')
