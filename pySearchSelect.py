@@ -10,56 +10,60 @@ import urwid
 import argparse
 # use unix like file name matching.
 import fnmatch 
+# python logging
+import logging
 
+# http://docs.python.org/2/howto/logging.html#logging-basic-tutorial
+# redirect logging to a /tmp file
+logging.basicConfig(filename='/tmp/pysearchselect.log', filemode='w', level=logging.DEBUG)
+#logging.basicConfig(filename='example.log', filemode='w', level=logging.DEBUG)
 
 def isQuickSelect(input):
-    return input.isalnum()
+    logging.debug("Inside function isQuickSelect, Input (%s)", input)
+    # input len is 2 when user presses up arrow at the first element in
+    # the list.
+    if (len(input) == 1):
+        logging.debug("Inside function isQuickSelect, ord(Input) (%s)", ord(input))
+        if ord(input) in range(ord('0'), ord('9') + 1):
+            return True
+        elif ord(input) in range(ord('a'), ord('z') + 1):
+            return True
+    return False
 
 def quickSelect2Int(input):
+    logging.debug("Inside function quickSelect2Int, Input (%s)", input)
     if input.isdigit():
-        return ord(input) - 48
+        return ord(input) - ord('0')
     elif input.isalpha():
-        # ord('a') = 97 
-        return ord(input) - 87
+        return ord(input) - ord('a') + 10
 
 def int2QuickSelect(index):
     if index in range(0, 10):
         return str(index);
     elif index in range(10, 36):
-        # chr(97) = 'a'
-        return chr(index + 87)
+        return chr(index + ord('a') - 10)
     else:
-        return ""
+        # return space so that the digits are aligned.
+        return " "
 
 class ItemWidget (urwid.WidgetWrap):
     def __init__ (self, index, description):
-        self.index = index
+        # store the content which can be extracted.
         self.content = '%s' % (description[0:])
-        self.item = [
-            (
-                'fixed', 
-                4, 
-                urwid.Padding(
-                    urwid.AttrWrap(
-                        urwid.Text('%s' % int2QuickSelect(index)), 
-                        'body', 
-                        'focus'
-                    ), 
-                    left=1
-                )
-            ),
-            urwid.AttrWrap(
-                urwid.Text('%s' % description), 
-                'body', 
-                'focus'
-            ),
-        ]
-        w = urwid.Columns(self.item)
-        self.__super.__init__(w)
-
+        self.__super.__init__(
+            urwid.Columns([
+                urwid.AttrWrap(
+                    urwid.Text(int2QuickSelect(index) + " " + description), 
+                    'body', 
+                    'focus'
+                ),
+            ])
+        )
+    #  to make a list, it have to be selectable, otherwise when you scroll, it
+    #  will behave like a web browser, it will scroll the screen as soon as
+    #  you press the down key, instead to go through every item of the screen before.
     def selectable (self):
         return True
-
     def keypress(self, size, key):
         return key
 
@@ -68,13 +72,11 @@ class CustomEdit(urwid.Edit):
     signals = ['done']
 
     def keypress(self, size, key):
-        if key in ('enter','tab', 'down', 'up', 'ctrl n'):
-            urwid.emit_signal(self, 'done', self.get_edit_text())
-            return
-        elif key == 'esc':
-            urwid.emit_signal(self, 'done', None)
-            return
+        logging.debug("Inside function keypress," + 
+           "size (%s), key(%s)", size, key
+        )
         urwid.Edit.keypress(self, size, key)
+        urwid.emit_signal(self, 'done', self.get_edit_text())
 
 class MyApp(object):
     def __init__(self, data):
@@ -83,9 +85,10 @@ class MyApp(object):
             ('focus' , 'black'  , 'light green' ) ,
             ('head'  , 'yellow' , 'black'       ) ,
         ]
+        self.insertMode = False
         self.file   = data["file"]
         self.items  = data["lines"]
-        self.head   = CustomEdit('/')
+        self.head   = CustomEdit('[Cmd]')
         header      = urwid.AttrMap(self.head, 'head')
         self.walker = urwid.SimpleListWalker([
                 # python list comprehension. See
@@ -99,9 +102,9 @@ class MyApp(object):
                 self.listbox,
                 'body'
             ),
-            header=header,
-            footer=None,
-            focus_part='header'
+            header=None,
+            footer=header,
+            focus_part='body'
         )
 
         loop = urwid.MainLoop(
@@ -114,7 +117,21 @@ class MyApp(object):
         loop.run()
 
     def keystroke (self, input):
-        if input in ('q', 'Q'):
+        logging.debug("Inside function keystroke, Input (%s)", input)
+        # the is does not work here, so end up using in
+        if input in ('ctrl n', 'ctrl N'):
+            try:
+                (junk, focus) = self.walker.get_focus()
+                self.walker.set_focus(self.walker.next_position(focus))
+            except (IndexError):
+                pass
+        elif input in ('ctrl p', 'ctrl P'):
+            try:
+                (junk, focus) = self.walker.get_focus()
+                self.walker.set_focus(self.walker.prev_position(focus))
+            except (IndexError):
+                pass
+        elif input is 'esc':
             raise urwid.ExitMainLoop()
         elif input is 'enter':
             fh = open(self.file, "w")
@@ -122,12 +139,16 @@ class MyApp(object):
             fh.close()
             raise urwid.ExitMainLoop()
         elif input in ('/', 'tab'):
-            self.view.set_focus('header')
+            self.insertMode = not self.insertMode
+            if self.insertMode:
+                self.head.set_caption('[Ins]')
+            else:
+                self.head.set_caption('[Cmd]')
+        elif self.insertMode:
+                if not isinstance(input, tuple):
+                    self.head.keypress((20,), input)
         elif isQuickSelect(input):
             self.walker.set_focus(quickSelect2Int(input))
-        elif input is "ctrl n":
-            self.walker.set_focus(self.walker.next_position()+ 1)
-
 
 
     def edit_change(self, input, content):
