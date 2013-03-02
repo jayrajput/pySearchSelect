@@ -118,10 +118,12 @@ class MyApp(object):
             raise urwid.ExitMainLoop()
         # Select
         elif input is 'enter':
-            fh = open(self.file, "w")
-            fh.write(self.walker.get_focus()[0].content)
-            fh.close()
-            raise urwid.ExitMainLoop()
+            focus=self.walker.get_focus()
+            if focus[0] is not None:
+                fh = open(self.file, "w")
+                fh.write(focus[0].content)
+                fh.close()
+                raise urwid.ExitMainLoop()
         # Search
         elif not isinstance(input, tuple):
             # if input is something other than the mouse.

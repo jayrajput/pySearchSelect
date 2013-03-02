@@ -1,7 +1,6 @@
 Technical Notes
 ===============
 
-
 Why quick select feature was removed from python search select (PSS)?
 
 Quick select needed to assign a unique key (0-9, a-z) to each item. Using

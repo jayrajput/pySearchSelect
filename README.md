@@ -17,26 +17,35 @@ Software requirement:
 This python script requires urwid version 1.1.1 (one of the python curses
 library). Download urwid from http://excess.org/urwid and untar it and then
 update the PYTHONPATH. This script also requires python argparse module.
-Ubuntu has package called python-urwid but that is old and PSS does not support
-it.
+Ubuntu has package called python-urwid which does not corresponds to
+urwidv1.1.1 (as of on 02MAR2013) and PSS does not support it.
+
+How I use pss:
+
+When using pss curses GUI, try to type without looking at the search box. This
+is more like typing without looking at the keyboard. Initially it is a little
+odd but after some time you will get a hang of it. If you really want to look
+at the search box while typing, you can update the code and move the search box
+to the header in place of footer.
 
 <a id="keyBindings"><a>Key Bindings:
 ```
 Select and Quit:
-mouse      : selects an item (no quitting)
-enter      : write selection to given file and quit
-esc        : quit only (no selection writing)
-ctrl-x     : same as esc, but seems to a little faster on the terminal
+mouse  : selects an item (no writing to file and no quitting)
+esc    : quit only (no writing to file)
+ctrl-x : same as esc, but seems to a little faster on the terminal
+enter  : write selection to given file and quit
 
 Movements:
-up         : Move up
-down       : Move down
-ctrl-p     : same as Up
-ctrl-n     : same as Down
+up     : Move up
+down   : Move down
+ctrl-p : same as Up
+ctrl-n : same as Down
 
 Search:
 Everthing else. Just type and search.
 ```
+
 Usage:
 ````
 usage: pss.py [-h] -f FILE -l [line [line ...]]
@@ -53,15 +62,11 @@ Examples:
 
 Simple Usage:
 
-This command will open full screen Curses-based terminal session. And then
-depending on the user selection, the user selection will be written to the file
-specified in -f argument of the command.
-
 pss.py -f ~/.result -l line1 line2 line3
 
 Advanced Usage:
 
-pss.py is useful when you create wrappers over it. I was using it to
+pss.py is useful when you create wrappers over it. I am using it to
 interactively select my clearcase views using the myviews function given below
 in my .bashrc
 
