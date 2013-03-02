@@ -19,8 +19,8 @@ function myview()
 {
     # clear any previous selection.
     cat /dev/null > $selViewFile;
-    # $pySearchSelect shall be defined and be in your $PATH
-    $pySearchSelect -f $selViewFile -l $(cat $mruViewFile) $(cat $allViewFile)
+    # pss.py shall be available in your $PATH
+    pss.py -f $selViewFile -l $(cat $mruViewFile) $(cat $allViewFile)
     # if file has some contents
     if [[ -s $selViewFile ]]; then
         pushViewToMruList $(cat $selViewFile);

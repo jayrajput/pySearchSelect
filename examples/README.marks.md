@@ -16,7 +16,7 @@ navigation and it does not support search and quick select and is written in
 C++ which you cannot edit as easily as python.
 
 This python script when execute shows the formatted content of the ~/.cdargs.
-That is all it does and it does it using pySearchSelect module.
+That is all it does and it does it using pss module.
 
 To install cdargs on ubuntu execute "sudo apt-get install cdargs". Once cdargs
 is installed, get the bash file from

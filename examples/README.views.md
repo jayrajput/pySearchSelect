@@ -3,7 +3,7 @@ viewSearchSelect
 
 bash script to interactively search and select cleartool views. I have written this 
 script to interactively select my clearcase views.  This
-script passes a list of views to the pySearchSelect command to show a full
+script passes a list of views to the pss.py command to show a full
 screen curses based menu to the user to search and select a view. The list
 contains the most recently used views followed by others. This script keep track
 of the most recently views.
@@ -16,7 +16,7 @@ Responsibility of this script:
 This script will create allView and mruView needed by this script under
 ~/.viewSearchSelect.
 
-Responsibility of pySearchSelect is to provide a GUI for search and selection
+Responsibility of pss.py is to provide a GUI for search and selection
 of views.
 
 Cleartool terminology/commands:

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import pySearchSelect
+import pss
 import os
 
 home=os.environ["HOME"]
@@ -28,7 +28,7 @@ inLines = []
 for mark, target in lines:
     inLines.append("[" + mark.ljust(maxMarkLen) + "] " + target)
 
-pySearchSelect.MyApp({
+pss.MyApp({
     "file"  : home + "/.cdargsresult",
     "lines" : inLines,
 })
