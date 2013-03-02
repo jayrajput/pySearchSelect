@@ -48,15 +48,17 @@ Everthing else. Just type and search.
 
 Usage:
 ````
-usage: pss.py [-h] -f FILE -l [line [line ...]]
+usage: pss.py [-h] -f FILE -l [line [line ...]] [-s SEARCH]
 
 Interactive search and selection of ASCII lines using python
 
-optional arguments:
+arguments:
   -h, --help            show this help message and exit
   -f FILE, --file FILE  File to write the user selection.
   -l [line [line ...]], --lines [line [line ...]]
                         Lines to be displayed interactively to the user
+  -s SEARCH, --search SEARCH
+                        Intial search string to filter the list
 ```
 Examples:
 

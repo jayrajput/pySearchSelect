@@ -34,7 +34,7 @@ to use marks.
 
 to these updated lines:
 
-marks
+marks -s "${1/\/*/}"
 if [[ -s $HOME/.cdargsresult ]]; then
     dir=$(cat $HOME/.cdargsresult | sed -e 's!\[.*\] !!g')
 fi

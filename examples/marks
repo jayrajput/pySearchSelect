@@ -1,6 +1,20 @@
 #!/usr/bin/python
+import argparse
 import pss
 import os
+
+parser = argparse.ArgumentParser(
+    description='interactive search and selection of directories bookmarked by cdargs'
+)
+# if a value is not provided, argparse set the default of searchStr to
+# None.
+parser.add_argument(
+    "-s", "--search",
+    required=False,
+    help='Intial search string to filter the bookmarks',
+    dest='search'
+)
+args = parser.parse_args()
 
 home=os.environ["HOME"]
 
@@ -34,6 +48,7 @@ for mark, target in lines:
     inLines.append("[" + mark.ljust(maxMarkLen) + "] " + target)
 
 pss.MyApp({
-    "file"  : home + "/.cdargsresult",
-    "lines" : inLines,
+    "file"   : home + "/.cdargsresult",
+    "lines"  : inLines,
+    "search" : args.search
 })

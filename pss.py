@@ -51,24 +51,29 @@ class MyApp(object):
                 "line 1",
                 "line 2",
                 "line 3"
-            ]
+            ],
+            # optional search string.
+            "search" : "2",
         }
         """
         # this is used to write the selection.
-        self.file   = data["file"]
+        self.file   = data.get("file")
         # used for performing search.
-        self.items  = data["lines"]
+        self.items  = data.get("lines")
+
+        if self.file is None or self.items is None:
+            raise ValueError("Mandatory arguments (file and lines) missing.")
+
         # urwid specific widgets.
-        # variable to erase the content of search box on first edit.
-        self.firstEdit = True 
         # footer to erase and set value on search.
-        self.foot   = urwid.Edit(("bold", "Srch:"), "Type to Search")
+        self.foot   = urwid.Edit("/")
         # walker to add /remove content from the listbox.
         self.walker = urwid.SimpleListWalker([
             # python list comprehension. See
             # http://docs.python.org/2/tutorial/datastructures.html#list-comprehensions
             ItemWidget(item) for item in data["lines"]
         ])
+
 
         loop = urwid.MainLoop(
             # urwid.Frame is a box widget containing header, body and
@@ -91,6 +96,13 @@ class MyApp(object):
             unhandled_input=self.keystroke
         )
         urwid.connect_signal(self.foot, 'change', self.editChange)
+
+        # filter the list if requested by the user.
+        search = data.get("search")
+        if search is not None:
+            self.foot.set_edit_text(search)
+            self.foot.set_edit_pos(len(search))
+
         loop.run()
 
     def keystroke (self, input):
@@ -130,11 +142,6 @@ class MyApp(object):
             # mouse inputs are tuples e.g
             # Input (('mouse press', 1, 3, 15))
             # Input (('mouse release', 0, 3, 15))
-
-            # clear the contents for the first edit.
-            if (self.firstEdit):
-                self.foot.set_edit_text("")
-                self.firstEdit = False
             # pass on the keyboard characters to the edit box.
             # size 20 is choosen for large keys like backspace??
             self.foot.keypress((20,), input)
@@ -173,8 +180,17 @@ if __name__ == '__main__':
         dest='inLines',
         metavar='line'
     )
+    # if a value is not provided, argparse set the default of searchStr to
+    # None.
+    parser.add_argument(
+        "-s", "--search",
+        required=False,
+        help='Intial search string to filter the list',
+        dest='search'
+    )
     args = parser.parse_args()
     MyApp({
-        "file" : args.file,
-        "lines" : args.inLines
+        "file"   : args.file,
+        "lines"  : args.inLines,
+        "search" : args.search
     })

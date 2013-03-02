@@ -17,10 +17,13 @@ CT_LSVIEW="cleartool lsview -short "
 
 function myview()
 {
+    # If parameter set, use alt_value, else use null string.
+    # See http://tldp.org/LDP/abs/html/parameter-substitution.html
+    search=${1+" -s $1"}
     # clear any previous selection.
     cat /dev/null > $selViewFile;
     # pss.py shall be available in your $PATH
-    pss.py -f $selViewFile -l $(cat $mruViewFile) $(cat $allViewFile)
+    pss.py -f $selViewFile -l $(cat $mruViewFile) $(cat $allViewFile) $search
     # if file has some contents
     if [[ -s $selViewFile ]]; then
         pushViewToMruList $(cat $selViewFile);
