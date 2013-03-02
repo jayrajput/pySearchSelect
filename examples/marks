@@ -12,15 +12,20 @@ for line in fileObj:
     # target in the list.
     lines.append(line.strip().split(" "))
 
+# This code does not work with python 2.4.3
 # find the maximum length of the mark to format the strings.
-maxMarkLen=len(
-    # max returns a tuple containing mark as [0] element.
-    max(
-        lines, 
-        # find max based on the len of first element in the tuple
-        key = lambda x: len(x[0])
-    )[0]
-)
+#maxMarkLen=len(
+#    # max returns a tuple containing mark as [0] element.
+#    max(
+#        lines, 
+#        # find max based on the len of first element in the tuple
+#        key = lambda x: len(x[0])
+#    )[0]
+#)
+
+maxMarkLen=0
+for mark, target in lines:
+    maxMarkLen=max(maxMarkLen, len(mark))
 
 # create a new list containing each element as a formatted string of format
 # [mark] : target
